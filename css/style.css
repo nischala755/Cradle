@@ -1,0 +1,24 @@
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+#home {
+    background: linear-gradient(rgba(0, 123, 255, 0.8), rgba(0, 123, 255, 0.8)), url('https://source.unsplash.com/random/1920x1080?cryptocurrency') no-repeat center center;
+    background-size: cover;
+}
+
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.fa-3x {
+    color: #007bff;
+}
