@@ -2,6 +2,23 @@ $(document).ready(function() {
     let web3;
     let userAccount;
 
+    // Dark/Light Mode Toggle
+    const themeToggle = $('#themeToggle');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    // Apply the saved theme on load
+    if (currentTheme === 'dark') {
+        $('body').addClass('dark-mode');
+        themeToggle.prop('checked', true);
+    }
+
+    // Toggle theme and save preference
+    themeToggle.on('change', function() {
+        $('body').toggleClass('dark-mode');
+        const theme = $('body').hasClass('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+    });
+
     // Connect wallet function
     $('#connectWallet').click(async function() {
         if (typeof window.ethereum !== 'undefined') {
@@ -29,31 +46,59 @@ $(document).ready(function() {
         const toToken = $('#toToken').val();
         const amount = $('#amount').val();
         
-        // Here you would typically interact with a smart contract
-        console.log(`Swapping ${amount} ${fromToken} to ${toToken}`);
-        
-        // For demonstration, let's show an alert
-        alert(`Swapped ${amount} ${fromToken} to ${toToken}`);
+        // Simulated token swap
+        $.post('php/api.php', { action: 'swap', fromToken: fromToken, toToken: toToken, amount: amount }, function(response) {
+            if (response.success) {
+                alert(`Swapped ${amount} ${fromToken} to ${toToken}`);
+                updateBalance(); // Refresh the balance
+                updateBlockchainViewer(); // Refresh the blockchain viewer
+            } else {
+                alert('Swap failed: ' + response.message);
+            }
+        }, 'json');
     });
 
-    // Function to update balance (simulated)
+    // Mining function
+    $('#mineButton').click(function() {
+        $.post('php/api.php', { action: 'mine' }, function(response) {
+            if (response.success) {
+                alert(`Mining successful! You earned ${response.reward} ETH.`);
+                updateBalance(); // Refresh the balance
+                updateBlockchainViewer(); // Refresh the blockchain viewer
+            } else {
+                alert('Mining failed: ' + response.message);
+            }
+        }, 'json');
+    });
+
+    // Function to update balance
     function updateBalance() {
         const tokens = ['ETH', 'DAI', 'USDC'];
-        let balanceHtml = '';
-        tokens.forEach(async token => {
-            let balance;
-            if (token === 'ETH') {
-                balance = await web3.eth.getBalance(userAccount);
-                balance = web3.utils.fromWei(balance, 'ether');
-            } else {
-                balance = (Math.random() * 10).toFixed(4);
-            }
-            balanceHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                                ${token}
-                                <span class="badge bg-primary rounded-pill">${balance}</span>
-                            </li>`;
+        $('#balanceList').empty(); // Clear current balances
+        tokens.forEach(token => {
+            $.post('php/api.php', { action: 'get_balance', token: token }, function(response) {
+                if (response.success) {
+                    const balanceHtml = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                            ${token}
+                                            <span class="badge bg-primary rounded-pill">${response.balance}</span>
+                                        </li>`;
+                    $('#balanceList').append(balanceHtml);
+                }
+            }, 'json');
         });
-        $('#balanceList').html(balanceHtml);
+    }
+
+    // Function to update blockchain viewer
+    function updateBlockchainViewer() {
+        $.post('php/api.php', { action: 'get_transaction_history' }, function(response) {
+            if (response.success) {
+                $('#blockchainViewer').empty(); // Clear current transactions
+                response.transactions.forEach(tx => {
+                    const txHtml = `<li class="list-group-item">${tx.timestamp}: ${tx.type} ${tx.amount} ${tx.token}</li>`;
+                    $('#blockchainViewer').append(txHtml);
+                });
+            }
+        }, 'json');
     }
 
     // Add smooth scrolling for navigation
@@ -63,4 +108,8 @@ $(document).ready(function() {
             scrollTop: $($(this).attr('href')).offset().top
         }, 500, 'linear');
     });
+
+    // Initial load
+    updateBalance();
+    updateBlockchainViewer();
 });
