@@ -7,13 +7,15 @@ $(document).ready(function() {
 
         // Perform signup action
         $.post('php/auth.php', { action: 'signup', username: username, password: password }, function(response) {
-            alert(response.message); // Display message
-
-            if (response.message === 'Signup successful') {
-                // Redirect to login page upon successful signup
-                window.location.href = 'login.html';
+            if (response.success) {
+                alert('Signup successful');
+                window.location.href = 'login.html'; // Redirect to login page
+            } else {
+                alert(response.message); // Show error message
             }
-        }, 'json');
+        }, 'json').fail(function(jqXHR, textStatus, errorThrown) {
+            alert('Signup request failed: ' + textStatus);
+        });
     });
 
     // Login Form Submission
@@ -24,12 +26,14 @@ $(document).ready(function() {
 
         // Perform login action
         $.post('php/auth.php', { action: 'login', username: username, password: password }, function(response) {
-            if (response.message === 'Login successful') {
-                // Redirect to dashboard upon successful login
-                window.location.href = 'dashboard.html';
+            if (response.success) {
+                alert('Login successful');
+                window.location.href = 'dashboard.html'; // Redirect to dashboard
             } else {
-                alert(response.message); // Display error message
+                alert(response.message); // Show error message
             }
-        }, 'json');
+        }, 'json').fail(function(jqXHR, textStatus, errorThrown) {
+            alert('Login request failed: ' + textStatus);
+        });
     });
 });

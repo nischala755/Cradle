@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cradle - Dashboard</title>
+    <title>Dashboard - Cradle</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -60,27 +60,41 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Mining Button -->
+
+                <!-- Balance Card -->
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="card-title">Mining</h3>
-                            <button id="mineButton" class="btn btn-success w-100">Mine</button>
+                            <h3 class="card-title">Your Balance</h3>
+                            <ul class="list-group list-group-flush" id="balanceList">
+                                <!-- Balance will be populated by JavaScript -->
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Blockchain Viewer -->
             <div class="row">
                 <div class="col-md-12 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="card-title">Blockchain Viewer (Transaction History)</h3>
-                            <ul class="list-group list-group-flush" id="blockchainViewer">
+                            <h3 class="card-title">Transaction History</h3>
+                            <ul class="list-group list-group-flush" id="transactionHistory">
                                 <!-- Transactions will be populated by JavaScript -->
                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mining Card -->
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">Mining</h3>
+                            <p>Simulate mining and earn rewards in ETH.</p>
+                            <button id="mineButton" class="btn btn-success w-100">Start Mining</button>
                         </div>
                     </div>
                 </div>

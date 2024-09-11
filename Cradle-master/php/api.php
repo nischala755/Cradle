@@ -19,6 +19,14 @@ $action = $_POST['action'] ?? '';
 function handleSwap($fromToken, $toToken, $amount) {
     global $balances;
     
+    if (!isset($balances[$fromToken]) || !isset($balances[$toToken])) {
+        return ['success' => false, 'message' => 'Invalid tokens'];
+    }
+
+    if ($amount <= 0) {
+        return ['success' => false, 'message' => 'Invalid amount'];
+    }
+    
     if ($balances[$fromToken] >= $amount) {
         $balances[$fromToken] -= $amount;
         $balances[$toToken] += $amount; // Simple swap logic
@@ -38,13 +46,17 @@ function handleMine() {
     // Add transaction to history
     $transactions[] = ['timestamp' => date('Y-m-d H:i'), 'type' => 'mine', 'amount' => $miningReward, 'token' => 'ETH'];
     
-    return ['success' => true, 'reward' => $miningReward];
+    return ['success' => true, 'reward' => $miningReward, 'message' => 'Mining successful'];
 }
 
 // Function to get token balance
 function getBalance($token) {
     global $balances;
-    return ['success' => true, 'balance' => $balances[$token]];
+    if (isset($balances[$token])) {
+        return ['success' => true, 'balance' => $balances[$token]];
+    } else {
+        return ['success' => false, 'message' => 'Invalid token'];
+    }
 }
 
 // Function to get transaction history
